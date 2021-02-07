@@ -80,7 +80,7 @@ int  main(int argc, char *argv[])
     }
     else
     {
-      qDebug() << "file does not exist!";
+      parser.showHelp(1);
     }
   }
   // server
@@ -97,6 +97,10 @@ int  main(int argc, char *argv[])
       qint16  serverPort = 8080;
       server = new MyTcpServer(serverPort);
     }
+  }
+  else
+  {
+    parser.showHelp(1);
   }
 
   int  exec = app.exec();

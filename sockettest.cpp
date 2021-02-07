@@ -24,37 +24,11 @@ void  SocketTest::doConnect()
   qDebug() << "connecting...";
 
   socket->connectToHost("localhost", _portVal);
-  // socket->write("hello server");
-  // socket->waitForBytesWritten(3000);
-  // socket->waitForReadyRead(3000);
-  // qDebug() << "Reading: " << socket->bytesAvailable();
-  // qDebug() << socket->readAll();
 
-  // NOTE : the stackoverflow code to send a file to the server
-// QFile  file(_fpathStr);
-
-  // WARNING : Behnam Sabbaghi helped for this part
-// if (file.open(QIODevice::ReadWrite))
-// {
-// QByteArray  data = file.readAll();
-// file.close();
-// socket->write(data, data.length());
-//// WARNING : added on 2021/02/07
-// socket->waitForBytesWritten(3000);
-// socket->flush();
-// }
-// else
-// {
-// qDebug() << "not open!";
-// }
-
-  // end of the file i/o code for the transfer
   if (!socket->waitForConnected(1000))
   {
     qDebug() << "Error: " << socket->errorString();
   }
-
-  // WARNING : writes connected even when I'm not connected
 }
 
 // NOTE : why the program did not work without this function?

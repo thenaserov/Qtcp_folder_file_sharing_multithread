@@ -26,12 +26,9 @@ MyTcpServer::MyTcpServer(int port, QObject *parent):
 
 void  MyTcpServer::newConnection()
 {
-  // need to grab the socket
   QTcpSocket *socket = server->nextPendingConnection();
 
-  // NOTE : TRYNA READ A MESSAGE FROM THE CLIENT
   socket->waitForReadyRead(3000);
-  // NOTE : the code to read the file from the socket and save it
   QByteArray  bytesReceived = socket->readAll();
   QFile       fileFromClient;
   fileFromClient.setFileName("/home/nrezayi/Desktop/downloaded/f.txt");
@@ -40,5 +37,10 @@ void  MyTcpServer::newConnection()
   {
     fileFromClient.write(bytesReceived, bytesReceived.length());
     fileFromClient.close();
+    qDebug() << "file has been received";
+  }
+  else
+  {
+    qDebug() << "file has NOT been received";
   }
 }
