@@ -38,6 +38,7 @@ void  MyTcpServer::newConnection()
     fileFromClient.write(bytesReceived, bytesReceived.length());
     fileFromClient.close();
     qDebug() << "file has been received";
+    qDebug() << "great";
   }
   else
   {
