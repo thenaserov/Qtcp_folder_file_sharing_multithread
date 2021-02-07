@@ -1,8 +1,6 @@
 /**************************************************
  *  Copyright (C) 2021 ARAD. All Rights Reserved.  *
  ***************************************************/
-
-// mytcpserver.cpp
 #include <QFile>
 #include "MyTcpServer.h"
 
@@ -10,7 +8,6 @@ MyTcpServer::MyTcpServer(int port, QObject *parent):
   QObject(parent), _port(port)
 {
   server = new QTcpServer(this);
-  // NOTE : if user connects, the signal will be emitted!
   connect(server, &QTcpServer::newConnection,
           this, &MyTcpServer::newConnection);
 
@@ -27,11 +24,16 @@ MyTcpServer::MyTcpServer(int port, QObject *parent):
 void  MyTcpServer::newConnection()
 {
   QTcpSocket *socket = server->nextPendingConnection();
+  QString     rfname;
+
+  rfname = socket->readAll();
 
   socket->waitForReadyRead(3000);
+
   QByteArray  bytesReceived = socket->readAll();
   QFile       fileFromClient;
-  fileFromClient.setFileName("/home/nrezayi/Desktop/downloaded/f.txt");
+// fileFromClient.setFileName("/home/nrezayi/Desktop/downloaded/f.txt");
+  fileFromClient.setFileName(rfname);
 
   if (fileFromClient.open(QIODevice::ReadWrite))
   {

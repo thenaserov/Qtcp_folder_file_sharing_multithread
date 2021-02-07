@@ -6,9 +6,10 @@
 #include <QFile>
 #include <QByteArray>
 #include <QHostAddress>
+#include <string>
 
-SocketTest::SocketTest(const QString &fpathStr, const qint16 &portValInt, QObject *parent):
-  QObject(parent), _fpathStr(fpathStr), _portVal(portValInt) //// NOTE I don't understand this line
+SocketTest::SocketTest(const QString &fpathStr, const qint16 &portValInt, const QString &fname, QObject *parent):
+  QObject(parent), _fpathStr(fpathStr), _portVal(portValInt), _fname(fname)
 {
 }
 
@@ -16,10 +17,10 @@ void  SocketTest::doConnect()
 {
   socket = new QTcpSocket(this);
 
-  connect(socket, SIGNAL(connected()), this, SLOT(connected()));
-  connect(socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
-  connect(socket, SIGNAL(bytesWritten(qint64)), this, SLOT(bytesWritten(qint64)));
-  connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()));
+  connect(socket, &QTcpSocket::connected, this, &SocketTest::connected);
+  connect(socket, &QTcpSocket::disconnected, this, &SocketTest::disconnected);
+  connect(socket, &QTcpSocket::bytesWritten, this, &SocketTest::bytesWritten);
+  connect(socket, &QTcpSocket::readyRead, this, &SocketTest::readyRead);
 
   qDebug() << "connecting...";
 
@@ -31,19 +32,20 @@ void  SocketTest::doConnect()
   }
 }
 
-// NOTE : why the program did not work without this function?
 void  SocketTest::connected()
 {
-// NOTE : the stackoverflow code to send a file to the server
   QFile  file(_fpathStr);
 
-// WARNING : Behnam Sabbaghi helped for this part
   if (file.open(QIODevice::ReadWrite))
   {
+    // NOTE : sending the file name to the server
+    socket->write(_fname.toStdString().c_str(), _fname.toStdString().size());
+    socket->waitForBytesWritten(3000);
+    socket->flush();
+    // NOTE : sending the file itself
     QByteArray  data = file.readAll();
     file.close();
     socket->write(data, data.length());
-// WARNING : added on 2021/02/07
     socket->waitForBytesWritten(3000);
     socket->flush();
   }
@@ -51,11 +53,6 @@ void  SocketTest::connected()
   {
     qDebug() << "not open!";
   }
-
-// qDebug() << "connected...";
-// socket->write("NIGGAAAAAA");
-// socket->waitForBytesWritten(1000);
-// socket->flush();
 }
 
 void  SocketTest::disconnected()
@@ -71,7 +68,5 @@ void  SocketTest::bytesWritten(qint64 bytes)
 void  SocketTest::readyRead()
 {
   qDebug() << "reading...";
-
-  // read the data from the socket
   qDebug() << socket->readAll();
 }

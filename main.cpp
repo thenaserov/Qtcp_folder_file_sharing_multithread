@@ -1,11 +1,10 @@
-// 2021.02.04
-
 #include <QCoreApplication>
 #include <QCommandLineParser>
 #include <QDebug>
 #include <iostream>
 #include <string>
 #include <QFile>
+#include <QFileInfo>
 #include <QDir>
 #include <QTcpServer>
 #include <QTcpSocket>
@@ -47,7 +46,6 @@ int  main(int argc, char *argv[])
   qDebug() << fpathStr;
   qDebug() << portValInt;
 
-  // WARNING : used the new method that Farzad Abedini said
   SocketTest  *cTest  = nullptr;
   MyTcpServer *server = nullptr;
 
@@ -57,24 +55,25 @@ int  main(int argc, char *argv[])
     qDebug() << "client...";
     qDebug() << "checking if the path exists...";
 
-    // WARNING : CODE STUCK IN HERE -> there must be a problem with file checking sequence!
     if (QFile(parser.value(fpath)).exists())
-// if (QFile::exists(fpathStr))
     {
       qDebug() << "path exists...";
       qDebug() << "checking if the port is set...";
+      QFileInfo  fileInfo(fpathStr);
+      QString    fname = fileInfo.fileName();
+      qDebug() << fname;
 
       if (parser.isSet(port))
       {
         qDebug() << "port is set...";
-        cTest = new SocketTest(fpathStr, portValInt);
+        cTest = new SocketTest(fpathStr, portValInt, fname);
         cTest->doConnect();
       }
       else
       {
         qDebug() << "port is not set...";
         qint16  portClient = 8080;
-        cTest = new SocketTest(fpathStr, portClient);
+        cTest = new SocketTest(fpathStr, portClient, fname);
         cTest->doConnect();
       }
     }

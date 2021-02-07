@@ -14,7 +14,7 @@ class SocketTest: public QObject
   Q_OBJECT
 
 public:
-  explicit SocketTest(const QString &fpathStr, const qint16 &portValInt, QObject *parent = 0);
+  explicit SocketTest(const QString &fpathStr, const qint16 &portValInt, const QString &fname, QObject *parent = 0);
 
 signals:
 public slots:
@@ -31,6 +31,7 @@ public slots:
 private:
   const QString  _fpathStr;
   const qint16   _portVal;
+  const QString  _fname;
   QTcpSocket    *socket;
 };
 
