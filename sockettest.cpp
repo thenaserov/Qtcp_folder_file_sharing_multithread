@@ -4,6 +4,7 @@
 #include "sockettest.h"
 #include <QTcpSocket>
 #include <QFile>
+#include <QDir>
 #include <QByteArray>
 #include <QHostAddress>
 #include <string>
@@ -34,24 +35,33 @@ void  SocketTest::doConnect()
 
 void  SocketTest::connected()
 {
-  QFile  file(_fpathStr);
+  // QFile  file(_fpathStr);
 
-  if (file.open(QIODevice::ReadWrite))
+  // assume the directory exists and contains some files
+  QDir         directory(_fpathStr);
+  QStringList  files = directory.entryList(QStringList() << "*.*", QDir::Files);
+
+  for (QString filename : files)
   {
-    // NOTE : sending the file name to the server
-    socket->write(_fname.toStdString().c_str(), _fname.toStdString().size());
-    socket->waitForBytesWritten(3000);
-    socket->flush();
-    // NOTE : sending the file itself
-    QByteArray  data = file.readAll();
-    file.close();
-    socket->write(data, data.length());
-    socket->waitForBytesWritten(3000);
-    socket->flush();
-  }
-  else
-  {
-    qDebug() << "not open!";
+    QFile  file(filename);
+
+    if (file.open(QIODevice::ReadWrite))
+    {
+      // NOTE : sending the file name to the server
+      socket->write(_fname.toStdString().c_str(), _fname.toStdString().size());
+      socket->waitForBytesWritten(3000);
+      socket->flush();
+      // NOTE : sending the file itself
+      QByteArray  data = file.readAll();
+      file.close();
+      socket->write(data, data.length());
+      socket->waitForBytesWritten(3000);
+      socket->flush();
+    }
+    else
+    {
+      qDebug() << "not open!";
+    }
   }
 }
 
