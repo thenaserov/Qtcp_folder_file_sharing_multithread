@@ -66,14 +66,14 @@ int  main(int argc, char *argv[])
       if (parser.isSet(port))
       {
         qDebug() << "port is set...";
-        cTest = new SocketTest(fpathStr, portValInt, fname);
+        cTest = new SocketTest(fpathStr, portValInt);
         cTest->doConnect();
       }
       else
       {
         qDebug() << "port is not set...";
         qint16  portClient = 8080;
-        cTest = new SocketTest(fpathStr, portClient, fname);
+        cTest = new SocketTest(fpathStr, portClient);
         cTest->doConnect();
       }
     }

@@ -26,23 +26,25 @@ void  MyTcpServer::newConnection()
   QTcpSocket *socket = server->nextPendingConnection();
   QString     rfname;
 
-  socket->waitForReadyRead();
+  socket->waitForReadyRead(3000);
   rfname = socket->readAll();
   qDebug() << rfname;
   socket->waitForReadyRead(3000);
-  QByteArray  bytesReceived = socket->readAll();
   QFile       fileFromClient("./" + rfname);
+  QByteArray  bytesReceived = socket->readAll();
+  socket->flush();
 // fileFromClient.setFileName("/home/nrezayi/Desktop/downloaded/f.txt");
 
-  if (fileFromClient.open(QIODevice::WriteOnly))
+  if (fileFromClient.open(QIODevice::ReadWrite))
   {
     fileFromClient.write(bytesReceived, bytesReceived.length());
     fileFromClient.close();
-    qDebug() << "file has been received";
-    qDebug() << "great";
+    qDebug() << "file " << rfname << " has been received";
   }
   else
   {
     qDebug() << "file has NOT been received";
   }
+
+  qDebug() << "end of file transfer...";
 }
