@@ -1,7 +1,6 @@
 task 1
 2021/02/07
 
-Dear Mr.Sabbaghi the mentor of my task
 task one has been completed
 
 here is the discribtion of the task:
